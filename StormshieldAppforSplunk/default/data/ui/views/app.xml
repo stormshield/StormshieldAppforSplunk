@@ -4,8 +4,8 @@
     <input type="time" searchWhenChanged="true">
       <label>Time Period</label>
       <default>
-        <earliestTime>-4h</earliestTime>
-        <latestTime>now</latestTime>
+        <earliest>-4h</earliest>
+        <latest>now</latest>
       </default>
     </input>
     <input type="dropdown" token="appliance" searchWhenChanged="true">
@@ -16,8 +16,8 @@
       <choice value="*">ALL</choice>
       <search>
         <query>index=sns | stats values(fw) as label | mvexpand label</query>
-        <earliestTime>$earliest$</earliestTime>
-        <latestTime>$latest$</latestTime>
+        <earliest>$earliest$</earliest>
+        <latest>$latest$</latest>
       </search>
       <fieldForLabel>label</fieldForLabel>
       <fieldForValue>label</fieldForValue>
@@ -41,8 +41,8 @@
       <suffix>"</suffix>
       <search>
         <query>index=sns logtype=alarm | stats values(user) as label | mvexpand label</query>
-        <earliestTime>$earliest$</earliestTime>
-        <latestTime>$latest$</latestTime>
+        <earliest>$earliest$</earliest>
+        <latest>$latest$</latest>
       </search>
       <fieldForLabel>label</fieldForLabel>
       <fieldForValue>label</fieldForValue>

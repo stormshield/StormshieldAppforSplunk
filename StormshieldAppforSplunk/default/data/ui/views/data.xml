@@ -4,8 +4,8 @@
     <input type="time" searchWhenChanged="true">
       <label>Time Period</label>
       <default>
-        <earliestTime>-60m</earliestTime>
-        <latestTime>now</latestTime>
+        <earliest>-60m</earliest>
+        <latest>now</latest>
       </default>
     </input>
     <input type="dropdown" token="appliance" searchWhenChanged="true">
@@ -16,8 +16,8 @@
       <choice value="*">ALL</choice>
       <search>
         <query>index=sns | stats values(fw) as label | mvexpand label</query>
-        <earliestTime>$earliest$</earliestTime>
-        <latestTime>$latest$</latestTime>
+        <earliest>$earliest$</earliest>
+        <latest>$latest$</latest>
       </search>
       <fieldForLabel>label</fieldForLabel>
       <fieldForValue>label</fieldForValue>
@@ -41,8 +41,8 @@
       <suffix>"</suffix>
       <search>
         <query>index=sns | stats values(user) as label | mvexpand label</query>
-        <earliestTime>$earliest$</earliestTime>
-        <latestTime>$latest$</latestTime>
+        <earliest>$earliest$</earliest>
+        <latest>$latest$</latest>
       </search>
       <fieldForLabel>label</fieldForLabel>
       <fieldForValue>label</fieldForValue>
@@ -55,9 +55,8 @@
         <search>
           <query>index=sns $appliance$ $src$ $dst$ $user$             AND logtype=web              OR logtype=ssl              OR ( (logtype=plugin OR logtype=connection) AND (proto=http OR proto=ssl))             | stats sum(rcvd) AS download | eval download=round(download/1024/1024)</query>
         </search>
-        <option name="drilldown">none</option>
-        <option name="linkView">search</option>
-        <option name="afterLabel">MB</option>
+        <option name="drilldown">all</option>
+        <option name="unit">MB</option>
       </single>
     </panel>
     <panel>
@@ -66,9 +65,8 @@
         <search>
           <query>index=sns $appliance$ $src$ $dst$ $user$                logype=pop3              OR logtype=smtp              OR (                    (logtype=connection OR logtype=pop3 OR logtype=plugin)                AND (dstportname=smtp OR dstportname:smtps OR dstportname=pop3 OR dstportname=pop3s OR dstportname=imap OR dstportname=imaps)                 )             OR (logtype=web AND cat_site="Web-based Email")             | stats sum(rcvd) AS download | eval download=round(download/1024/1024)</query>
         </search>
-        <option name="drilldown">none</option>
-        <option name="linkView">search</option>
-        <option name="afterLabel">MB</option>
+        <option name="drilldown">all</option>
+        <option name="unit">MB</option>
       </single>
     </panel>
     <panel>
@@ -77,9 +75,8 @@
         <search>
           <query>index=sns $appliance$ $src$ $dst$ $user$ | stats sum(rcvd) AS download | eval download=round(download/1024/1024)</query>
         </search>
-        <option name="drilldown">none</option>
-        <option name="linkView">search</option>
-        <option name="afterLabel">MB</option>
+        <option name="drilldown">all</option>
+        <option name="unit">MB</option>
       </single>
     </panel>
   </row>
@@ -90,9 +87,8 @@
         <search>
           <query>index=sns $appliance$ $src$ $dst$ $user$ AND logtype=web OR logtype=ssl OR (logtype=plugin OR logtype=connection AND (proto=http OR proto=ssl))| stats sum(sent) AS upload | eval upload=round(upload/1024/1024)</query>
         </search>
-        <option name="drilldown">none</option>
-        <option name="linkView">search</option>
-        <option name="afterLabel">MB</option>
+        <option name="drilldown">all</option>
+        <option name="unit">MB</option>
       </single>
     </panel>
     <panel>
@@ -101,9 +97,8 @@
         <search>
           <query>index=sns $appliance$ $src$ $dst$ $user$                logype=pop3              OR logtype=smtp              OR (                    (logtype=connection OR logtype=pop3 OR logtype=plugin)                AND (dstportname=smtp OR dstportname:smtps OR dstportname=pop3 OR dstportname=pop3s OR dstportname=imap OR dstportname=imaps)                 )             OR (logtype=web AND cat_site="Web-based Email")             | stats sum(sent) AS upload | eval upload=round(upload/1024/1024)</query>
         </search>
-        <option name="drilldown">none</option>
-        <option name="linkView">search</option>
-        <option name="afterLabel">MB</option>
+        <option name="drilldown">all</option>
+        <option name="unit">MB</option>
       </single>
     </panel>
     <panel>
@@ -112,9 +107,8 @@
         <search>
           <query>index=sns $appliance$ $src$ $dst$ $user$ | stats sum(sent) AS upload | eval upload=round(upload/1024/1024)</query>
         </search>
-        <option name="drilldown">none</option>
-        <option name="linkView">search</option>
-        <option name="afterLabel">MB</option>
+        <option name="drilldown">all</option>
+        <option name="unit">MB</option>
       </single>
     </panel>
   </row>

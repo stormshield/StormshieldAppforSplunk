@@ -10,8 +10,7 @@
           <earliest>rt-30s</earliest>
           <latest>rt</latest>
         </search>
-        <option name="drilldown">none</option>
-        <option name="linkView">search</option>
+        <option name="drilldown">all</option>
       </single>
     </panel>
     <panel>
@@ -22,8 +21,7 @@
           <earliest>rt-30s</earliest>
           <latest>rt</latest>
         </search>
-        <option name="drilldown">none</option>
-        <option name="linkView">search</option>
+        <option name="drilldown">all</option>
       </single>
     </panel>
     <panel>
@@ -34,8 +32,7 @@
           <earliest>rt-5m</earliest>
           <latest>rt</latest>
         </search>
-        <option name="drilldown">none</option>
-        <option name="linkView">search</option>
+        <option name="drilldown">all</option>
       </single>
     </panel>
   </row>

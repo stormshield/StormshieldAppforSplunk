@@ -4,8 +4,8 @@
     <input type="time" searchWhenChanged="true">
       <label>Time Period</label>
       <default>
-        <earliestTime>-60m</earliestTime>
-        <latestTime>now</latestTime>
+        <earliest>-60m</earliest>
+        <latest>now</latest>
       </default>
     </input>
     <input type="dropdown" token="appliance" searchWhenChanged="true">
@@ -16,8 +16,8 @@
       <choice value="*">ALL</choice>
       <search>
         <query>index=sns | stats values(fw) as label | mvexpand label</query>
-        <earliestTime>$earliest$</earliestTime>
-        <latestTime>$latest$</latestTime>
+        <earliest>$earliest$</earliest>
+        <latest>$latest$</latest>
       </search>
       <fieldForLabel>label</fieldForLabel>
       <fieldForValue>label</fieldForValue>
@@ -41,8 +41,8 @@
       <suffix>"</suffix>
       <search>
         <query>index=sns logtype=web | stats values(user) as label | mvexpand label</query>
-        <earliestTime>$earliest$</earliestTime>
-        <latestTime>$latest$</latestTime>
+        <earliest>$earliest$</earliest>
+        <latest>$latest$</latest>
       </search>
       <fieldForLabel>label</fieldForLabel>
       <fieldForValue>label</fieldForValue>
@@ -54,8 +54,8 @@
         <title>Connections</title>
         <search>
           <query>index=sns logtype=web $appliance$ $src$ $dst$ $user$ | top limit=10 dstportname</query>
-          <earliestTime>$earliest$</earliestTime>
-          <latestTime>$latest$</latestTime>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
         </search>
         <option name="charting.chart">pie</option>
         <option name="charting.axisY2.enabled">false</option>
@@ -333,8 +333,8 @@
         <title>Internet Web Servers Location</title>
         <search>
           <query>index=sns $appliance$ $src$ $dst$ $user$ logtype=web| iplocation dst | geostats count</query>
-          <earliestTime>$earliest$</earliestTime>
-          <latestTime>$latest$</latestTime>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
         </search>
       </map>
     </panel>

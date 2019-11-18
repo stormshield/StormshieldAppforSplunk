@@ -1,11 +1,11 @@
 <form>
-  <label>Mail Dashboard</label>
+  <label>Threat Dashboard</label>
   <fieldset autoRun="true" submitButton="true">
     <input type="time" searchWhenChanged="true">
       <label>Time Period</label>
       <default>
-        <earliestTime>-60m</earliestTime>
-        <latestTime>now</latestTime>
+        <earliest>-60m</earliest>
+        <latest>now</latest>
       </default>
     </input>
     <input type="dropdown" token="appliance" searchWhenChanged="true">
@@ -16,8 +16,8 @@
       <choice value="*">ALL</choice>
       <search>
         <query>index=sns | stats values(fw) as label | mvexpand label</query>
-        <earliestTime>$earliest$</earliestTime>
-        <latestTime>$latest$</latestTime>
+        <earliest>$earliest$</earliest>
+        <latest>$latest$</latest>
       </search>
       <fieldForLabel>label</fieldForLabel>
       <fieldForValue>label</fieldForValue>
@@ -40,9 +40,9 @@
       <prefix>user="</prefix>
       <suffix>"</suffix>
       <search>
-        <query>index=sns | stats values(user) as label | mvexpand label</query>
-        <earliestTime>$earliest$</earliestTime>
-        <latestTime>$latest$</latestTime>
+        <query>index=sns logtype=alarm | stats values(user) as label | mvexpand label</query>
+        <earliest>$earliest$</earliest>
+        <latest>$latest$</latest>
       </search>
       <fieldForLabel>label</fieldForLabel>
       <fieldForValue>label</fieldForValue>
@@ -50,77 +50,26 @@
   </fieldset>
   <row>
     <panel>
-      <chart>
-        <title>Mails received</title>
+      <table>
+        <title>Alarms</title>
         <search>
-          <query>index=sns $appliance$ $src$ $dst$ $user$                logype=pop3              OR logtype=smtp              OR (                    (logtype=connection OR logtype=pop3 OR logtype=plugin)                AND (dstportname=smtp OR dstportname:smtps OR dstportname=pop3 OR dstportname=pop3s OR dstportname=imap OR dstportname=imaps)                 )             OR (logtype=web AND cat_site="Web-based Email")             | stats sum(rcvd) AS download by user | eval download=round(download/1024/1024) | sort 10 -download</query>
+          <query>index=sns $appliance$ $src$ $dst$ $user$ logtype=alarm classification=2| top limit=15 msg</query>
         </search>
-        <option name="charting.chart">column</option>
-        <option name="charting.axisY2.enabled">undefined</option>
-        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
-        <option name="charting.axisLabelsX.majorLabelStyle.rotation">-45</option>
-        <option name="charting.axisTitleX.text">User name</option>
-        <option name="charting.axisTitleX.visibility">visible</option>
-        <option name="charting.axisTitleY.text">Traffic (MB)</option>
-        <option name="charting.axisTitleY.visibility">visible</option>
-        <option name="charting.axisTitleY2.visibility">visible</option>
-        <option name="charting.axisX.scale">linear</option>
-        <option name="charting.axisY.scale">linear</option>
-        <option name="charting.axisY2.scale">inherit</option>
-        <option name="charting.chart.bubbleMaximumSize">50</option>
-        <option name="charting.chart.bubbleMinimumSize">10</option>
-        <option name="charting.chart.bubbleSizeBy">area</option>
-        <option name="charting.chart.nullValueMode">gaps</option>
-        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
-        <option name="charting.chart.stackMode">default</option>
-        <option name="charting.chart.style">shiny</option>
-        <option name="charting.drilldown">all</option>
-        <option name="charting.layout.splitSeries">0</option>
-        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
-        <option name="charting.legend.placement">none</option>
-      </chart>
+        <option name="wrap">undefined</option>
+        <option name="rowNumbers">undefined</option>
+        <option name="drilldown">row</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="count">10</option>
+      </table>
     </panel>
     <panel>
       <chart>
-        <title>Mails sent</title>
+        <title>Alarms</title>
         <search>
-          <query>index=sns $appliance$ $src$ $dst$ $user$                logype=pop3              OR logtype=smtp              OR (                    (logtype=connection OR logtype=pop3 OR logtype=plugin)                AND (dstportname=smtp OR dstportname:smtps OR dstportname=pop3 OR dstportname=pop3s OR dstportname=imap OR dstportname=imaps)                 )             OR (logtype=web AND cat_site="Web-based Email")             | stats sum(rcvd) AS upload by user | eval upload=round(upload/1024/1024) | sort 10 -upload</query>
-        </search>
-        <option name="charting.chart">column</option>
-        <option name="charting.axisY2.enabled">undefined</option>
-        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
-        <option name="charting.axisLabelsX.majorLabelStyle.rotation">-45</option>
-        <option name="charting.axisTitleX.text">User name</option>
-        <option name="charting.axisTitleX.visibility">visible</option>
-        <option name="charting.axisTitleY.text">Traffic (MB)</option>
-        <option name="charting.axisTitleY.visibility">visible</option>
-        <option name="charting.axisTitleY2.visibility">visible</option>
-        <option name="charting.axisX.scale">linear</option>
-        <option name="charting.axisY.scale">linear</option>
-        <option name="charting.axisY2.scale">inherit</option>
-        <option name="charting.chart.bubbleMaximumSize">50</option>
-        <option name="charting.chart.bubbleMinimumSize">10</option>
-        <option name="charting.chart.bubbleSizeBy">area</option>
-        <option name="charting.chart.nullValueMode">gaps</option>
-        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
-        <option name="charting.chart.stackMode">default</option>
-        <option name="charting.chart.style">shiny</option>
-        <option name="charting.drilldown">all</option>
-        <option name="charting.layout.splitSeries">0</option>
-        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
-        <option name="charting.legend.placement">none</option>
-      </chart>
-    </panel>
-    <panel>
-      <chart>
-        <title>Spam levels</title>
-        <search>
-          <query>index=sns $appliance$ $src$ $dst$ $user$ logtype=smtp OR logtype=pop3 | stats count by spamlevel</query>
-          <earliestTime>$earliest$</earliestTime>
-          <latestTime>$latest$</latestTime>
+          <query>index=sns $appliance$ $src$ $dst$ $user$ logtype=alarm classification=2| top limit=15 msg</query>
         </search>
         <option name="charting.chart">pie</option>
-        <option name="charting.axisY2.enabled">false</option>
+        <option name="charting.axisY2.enabled">undefined</option>
         <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
         <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
         <option name="charting.axisTitleX.visibility">visible</option>
@@ -141,6 +90,97 @@
         <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
         <option name="charting.legend.placement">right</option>
       </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart>
+        <title>Virus detected</title>
+        <search>
+          <query>index=sns $appliance$ $src$ $dst$ $user$ logtype=web virus=infected| top limit=15 msg</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.axisY2.enabled">undefined</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>Virus analysis</title>
+        <search>
+          <query>index=sns $appliance$ $src$ $dst$ $user$ logtype=web | top limit=15 virus</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.axisY2.enabled">undefined</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>Web categories</title>
+        <search>
+          <query>index=sns $appliance$ $src$ $dst$ $user$ logtype=web AND (cat_site="Anonymizers" OR cat_site="Compromised" OR cat_site="Phishing &amp; Fraud" OR cat_site="Spam Sites" OR cat_site="Malware" OR cat_site=Botnets OR cat_site="proxy" ) | top limit=15 cat_site</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.axisY2.enabled">undefined</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <map>
+        <title>Threat map by destination</title>
+        <search>
+          <query>index=sns $appliance$ $src$ $dst$ $user$ logtype=alarm OR (logtype=web AND (virus=infected) OR (cat_site="Anonymizers" OR cat_site="Compromised" OR cat_site="Phishing &amp; Fraud" OR cat_site="Spam Sites" OR cat_site="Malware" OR cat_site=Botnets OR cat_site="proxy" ))| iplocation dst | geostats count</query>
+        </search>
+        <option name="mapping.data.maxClusters">100</option>
+        <option name="mapping.map.center">(0,0)</option>
+        <option name="mapping.map.zoom">2</option>
+        <option name="mapping.markerLayer.markerMaxSize">50</option>
+        <option name="mapping.markerLayer.markerMinSize">10</option>
+        <option name="mapping.markerLayer.markerOpacity">0.8</option>
+        <option name="mapping.tileLayer.maxZoom">7</option>
+        <option name="mapping.tileLayer.minZoom">0</option>
+        <option name="drilldown">all</option>
+      </map>
     </panel>
   </row>
 </form>

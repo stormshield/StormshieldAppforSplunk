@@ -4,8 +4,8 @@
     <input type="time" searchWhenChanged="true">
       <label>Time Period</label>
       <default>
-        <earliestTime>-4h</earliestTime>
-        <latestTime>now</latestTime>
+        <earliest>-4h</earliest>
+        <latest>now</latest>
       </default>
     </input>
     <input type="dropdown" token="appliance" searchWhenChanged="true">
@@ -14,8 +14,8 @@
       <suffix>"</suffix>
       <search>
         <query>index=sns | stats values(fw) as label | mvexpand label</query>
-        <earliestTime>$earliest$</earliestTime>
-        <latestTime>$latest$</latestTime>
+        <earliest>$earliest$</earliest>
+        <latest>$latest$</latest>
       </search>
       <fieldForLabel>label</fieldForLabel>
       <fieldForValue>label</fieldForValue>
@@ -28,8 +28,8 @@
         <title>System events by service</title>
         <search>
           <query>index=sns $appliance$ logtype=system | stats count by service</query>
-          <earliestTime>$earliest$</earliestTime>
-          <latestTime>$latest$</latestTime>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
         </search>
         <option name="charting.chart">column</option>
         <option name="charting.axisY2.enabled">false</option>
