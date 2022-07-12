@@ -26,20 +26,20 @@
       <search>
         <query>
           <![CDATA[
-        index=sns logtype=monitor 
+        index=sns logtype=monitor $appliance$
         | sort -time limit=1 
-        | rex field=_raw "Ethernet(?<ifindex>\d+)=(?<ifname>.*?)," max_match=100 
+        | rex field=_raw "(?<ifindex>(Ethernet|vlan|Agg|Wifi)\d+)=(?<ifname>.*?)," max_match=100
         | eval tmp = mvzip(ifindex,ifname)
         | mvexpand tmp 
-        | rex field=tmp "(?<ifindex>\d+),(?<ifname>.*)?" 
-        | sort ifindex
+        | rex field=tmp "(?<ifindex>.*),(?<ifname>.*)?"
+        | sort ifname
         | table ifindex ifname
        ]]>
         </query>
       </search>
       <fieldForLabel>ifname</fieldForLabel>
       <fieldForValue>ifindex</fieldForValue>
-      <default>0</default>
+      <selectFirstChoice>true</selectFirstChoice>
     </input>
   </fieldset>
   <row>
@@ -47,7 +47,17 @@
       <chart>
         <title>Mean</title>
         <search>
-          <query>index=sns logtype=monitor             | rex field=_raw "Ethernet$interface$=(?&lt;ifname&gt;.*?),(?&lt;eth_in&gt;.*?),(?&lt;eth_inmax&gt;.*?),(?&lt;eth_out&gt;.*?),(?&lt;eth_outmax&gt;.*?) "              | eval eth_in=eth_in*8/1000000              | eval eth_out=eth_out*8/1000000              | eval eth_inmax=eth_inmax*8/1000000              | eval eth_outmax=eth_outmax*8/1000000              | timechart mean(eth_in) AS incoming, mean(eth_out) AS outgoing</query>
+          <query>
+            <![CDATA[
+              index=sns logtype=monitor $appliance$
+              | rex field=_raw "$interface$=(?<ifname>.*?),(?<eth_in>.*?),(?<eth_inmax>.*?),(?<eth_out>.*?),(?<eth_outmax>.*?) "
+              | eval eth_in=eth_in/1000000
+              | eval eth_out=eth_out/1000000
+              | eval eth_inmax=eth_inmax/1000000
+              | eval eth_outmax=eth_outmax/1000000
+              | timechart mean(eth_in) AS incoming, mean(eth_out) AS outgoing
+            ]]>
+          </query>
         </search>
         <option name="charting.chart">line</option>
         <option name="charting.axisY2.enabled">false</option>
@@ -80,7 +90,17 @@
       <chart>
         <title>Peak</title>
         <search>
-          <query>index=sns logtype=monitor             | rex field=_raw "Ethernet$interface$=(?&lt;ifname&gt;.*?),(?&lt;eth_in&gt;.*?),(?&lt;eth_inmax&gt;.*?),(?&lt;eth_out&gt;.*?),(?&lt;eth_outmax&gt;.*?) "              | eval eth_in=eth_in*8/1000000              | eval eth_out=eth_out*8/1000000              | eval eth_inmax=eth_inmax*8/1000000              | eval eth_outmax=eth_outmax*8/1000000              | timechart max(eth_inmax) AS "incoming (peak)", max(eth_outmax) AS "outgoing (peak)"</query>
+          <query>
+            <![CDATA[
+              index=sns logtype=monitor $appliance$
+              | rex field=_raw "$interface$=(?<ifname>.*?),(?<eth_in>.*?),(?<eth_inmax>.*?),(?<eth_out>.*?),(?<eth_outmax>.*?) "
+              | eval eth_in=eth_in/1000000
+              | eval eth_out=eth_out/1000000
+              | eval eth_inmax=eth_inmax/1000000
+              | eval eth_outmax=eth_outmax/1000000
+              | timechart max(eth_inmax) AS "incoming (peak)", max(eth_outmax) AS "outgoing (peak)"
+            ]]>
+          </query>
         </search>
         <option name="charting.chart">line</option>
         <option name="charting.axisY2.enabled">false</option>
