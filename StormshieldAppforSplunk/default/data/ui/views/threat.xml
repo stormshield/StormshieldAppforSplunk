@@ -53,7 +53,7 @@
       <table>
         <title>Alarms</title>
         <search>
-          <query>index=sns $appliance$ $src$ $dst$ $user$ logtype=alarm classification=2| top limit=15 msg</query>
+          <query>index=sns $appliance$ $src$ $dst$ $user$ logtype=alarm AND classification=0 | top limit=15 msg</query>
         </search>
         <option name="wrap">undefined</option>
         <option name="rowNumbers">undefined</option>
@@ -66,7 +66,7 @@
       <chart>
         <title>Alarms</title>
         <search>
-          <query>index=sns $appliance$ $src$ $dst$ $user$ logtype=alarm classification=2| top limit=15 msg</query>
+          <query>index=sns $appliance$ $src$ $dst$ $user$ logtype=alarm AND classification=0 | top limit=15 msg</query>
         </search>
         <option name="charting.chart">pie</option>
         <option name="charting.axisY2.enabled">undefined</option>
@@ -97,7 +97,7 @@
       <chart>
         <title>Virus detected</title>
         <search>
-          <query>index=sns $appliance$ $src$ $dst$ $user$ logtype=web virus=infected| top limit=15 msg</query>
+          <query>index=sns $appliance$ $src$ $dst$ $user$ (logtype=web OR logtype=smtp OR logtype=pop3 OR logtype=ftp) virus=infected | top limit=15 msg</query>
         </search>
         <option name="charting.chart">pie</option>
         <option name="charting.axisY2.enabled">undefined</option>
@@ -126,7 +126,7 @@
       <chart>
         <title>Virus analysis</title>
         <search>
-          <query>index=sns $appliance$ $src$ $dst$ $user$ logtype=web | top limit=15 virus</query>
+          <query>index=sns $appliance$ $src$ $dst$ $user$ (logtype=web OR logtype=smtp OR logtype=pop3 OR logtype=ftp) | top limit=15 virus</query>
           <earliest>$earliest$</earliest>
           <latest>$latest$</latest>
         </search>
@@ -138,7 +138,7 @@
       <chart>
         <title>Web categories</title>
         <search>
-          <query>index=sns $appliance$ $src$ $dst$ $user$ logtype=web AND (cat_site="Anonymizers" OR cat_site="Compromised" OR cat_site="Phishing &amp; Fraud" OR cat_site="Spam Sites" OR cat_site="Malware" OR cat_site=Botnets OR cat_site="proxy" ) | top limit=15 cat_site</query>
+          <query>index=sns $appliance$ $src$ $dst$ $user$ (logtype=web OR logtype=ssl) AND (cat_site="webproxy" OR cat_site="untrusted" OR cat_site="fraud" OR cat_site="phishing" OR cat_site="spam" OR cat_site="malware" OR cat_site="malware_hd" OR cat_site="mature" OR cat_site="c&amp;c" OR cat_site="hacking" OR cat_site="piracy" OR cat_site="illegalactivities" OR cat_site="suicide") | top limit=15 cat_site</query>
         </search>
         <option name="charting.chart">pie</option>
         <option name="charting.axisY2.enabled">undefined</option>
@@ -169,7 +169,7 @@
       <map>
         <title>Threat map by destination</title>
         <search>
-          <query>index=sns $appliance$ $src$ $dst$ $user$ logtype=alarm OR (logtype=web AND (virus=infected) OR (cat_site="Anonymizers" OR cat_site="Compromised" OR cat_site="Phishing &amp; Fraud" OR cat_site="Spam Sites" OR cat_site="Malware" OR cat_site=Botnets OR cat_site="proxy" ))| iplocation dst | geostats count</query>
+          <query>index=sns $appliance$ $src$ $dst$ $user$ logtype=alarm OR (logtype=web OR logtype=smtp OR logtype=pop3 OR logtype=ftp AND (virus=infected OR (cat_site="webproxy" OR cat_site="untrusted" OR cat_site="fraud" OR cat_site="phishing" OR cat_site="spam" OR cat_site="malware" OR cat_site="malware_hd" OR cat_site="c&amp;c" OR cat_site="mature" OR cat_site="hacking" OR cat_site="piracy" OR cat_site="illegalactivities" OR cat_site="suicide" )))| iplocation dst | geostats count</query>
         </search>
         <option name="mapping.data.maxClusters">100</option>
         <option name="mapping.map.center">(0,0)</option>

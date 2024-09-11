@@ -66,7 +66,7 @@
       <table>
         <title>Malwares</title>
         <search>
-          <query>index=sns $appliance$ $src$ $dst$ $user$ logtype=alarm classification=2 | top msg</query>
+          <query>index=sns $appliance$ $src$ $dst$ $user$ (logtype=web OR logtype=smtp OR logtype=pop3 OR logtype=ftp) virus=infected | top msg</query>
         </search>
         <option name="wrap">undefined</option>
         <option name="rowNumbers">undefined</option>
